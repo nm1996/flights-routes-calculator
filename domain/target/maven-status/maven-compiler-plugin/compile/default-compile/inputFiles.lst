@@ -1,0 +1,6 @@
+/Users/nkolamilanovic/Projects/flight-routes/domain/src/main/java/com/route/flights/entity/Airport.java
+/Users/nkolamilanovic/Projects/flight-routes/domain/src/main/java/com/route/flights/entity/City.java
+/Users/nkolamilanovic/Projects/flight-routes/domain/src/main/java/com/route/flights/entity/Country.java
+/Users/nkolamilanovic/Projects/flight-routes/domain/src/main/java/com/route/flights/repository/AirportRepository.java
+/Users/nkolamilanovic/Projects/flight-routes/domain/src/main/java/com/route/flights/repository/CityRepository.java
+/Users/nkolamilanovic/Projects/flight-routes/domain/src/main/java/com/route/flights/repository/CountryRepository.java

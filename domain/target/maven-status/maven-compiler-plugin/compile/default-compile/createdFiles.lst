@@ -1,0 +1,4 @@
+com/route/flights/entity/Airport.class
+com/route/flights/entity/City.class
+com/route/flights/repository/AirportRepository.class
+com/route/flights/entity/Country.class

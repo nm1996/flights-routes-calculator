@@ -1,0 +1,6 @@
+/Users/nkolamilanovic/Projects/flight-routes/business/src/test/java/com/route/flights/binder/BinderTest.java
+/Users/nkolamilanovic/Projects/flight-routes/business/src/test/java/com/route/flights/importer/AirportImporterTest.java
+/Users/nkolamilanovic/Projects/flight-routes/business/src/test/java/com/route/flights/mapper/AirportMapperTest.java
+/Users/nkolamilanovic/Projects/flight-routes/business/src/test/java/com/route/flights/mapper/CityMapperTest.java
+/Users/nkolamilanovic/Projects/flight-routes/business/src/test/java/com/route/flights/mapper/CountryMapperTest.java
+/Users/nkolamilanovic/Projects/flight-routes/business/src/test/java/com/route/flights/service/implementation/AirportServiceImplTest.java
