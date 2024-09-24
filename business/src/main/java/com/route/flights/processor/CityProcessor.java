@@ -28,11 +28,17 @@ public class CityProcessor {
         return airports.stream()
                 .map(Airport::getCity)
                 .distinct()
+                .filter(this::isNotCached)
                 .peek(this::processCountryForCity)
                 .map(cityRepository::save)
                 .map(cityMapper::mapToDto)
                 .peek(globalWarehouse.getCityWarehouse()::addToList)
                 .toList();
+    }
+
+
+    private boolean isNotCached(City city){
+        return globalWarehouse.getCityWarehouse().isMissed(cityMapper.mapToDto(city));
     }
 
 

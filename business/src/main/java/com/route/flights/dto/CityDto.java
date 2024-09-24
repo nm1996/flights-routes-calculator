@@ -1,8 +1,9 @@
 package com.route.flights.dto;
 
-import com.route.flights.entity.City;
+
 import lombok.*;
 
+@EqualsAndHashCode(callSuper = false)
 @Data
 public class CityDto extends DTO {
     private String name;
@@ -20,6 +21,4 @@ public class CityDto extends DTO {
         this.name = name;
         this.country = countryDto;
     }
-
-
 }

@@ -24,7 +24,7 @@ public interface Warehouse<T extends DTO, E> {
     }
 
     default boolean isMissed(T t){
-        return !isPresent(t);
+        return getCached().stream().noneMatch(elem -> elem.equals(t));
     }
 
     default boolean isPresent(T t){

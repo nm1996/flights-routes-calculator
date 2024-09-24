@@ -1,9 +1,9 @@
 package com.route.flights.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = false)
 @Data
 public class CountryDto extends DTO {
     private String name;
@@ -18,12 +18,5 @@ public class CountryDto extends DTO {
 
     public CountryDto(String name) {
         this.name = name;
-    }
-
-    public boolean equals(Object dto){
-        if(dto instanceof CountryDto countryDto){
-            return countryDto.getName().equals(this.name);
-        }
-        return false;
     }
 }
