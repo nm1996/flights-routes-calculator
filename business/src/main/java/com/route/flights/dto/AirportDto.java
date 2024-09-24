@@ -2,7 +2,7 @@ package com.route.flights.dto;
 
 import lombok.*;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode(callSuper = false)
 @Data
 public class AirportDto extends DTO {
     private String name;

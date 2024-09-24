@@ -6,6 +6,7 @@ import com.route.flights.dto.CountryDto;
 import com.route.flights.warehouse.implementation.AirportWarehouse;
 import com.route.flights.warehouse.implementation.CityWarehouse;
 import com.route.flights.warehouse.implementation.CountryWarehouse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,6 +28,13 @@ class WarehouseTest {
     @Autowired
     AirportWarehouse airportWarehouse;
 
+    @AfterEach
+    void tearDown(){
+        cityWarehouse.clear();
+        countryWarehouse.clear();
+        airportWarehouse.clear();
+    }
+
     @Test
     void getCached() {
         List<CountryDto> countryDtoList = new ArrayList<>();
@@ -43,8 +51,6 @@ class WarehouseTest {
         cityWarehouse.addToList(cityDto);
 
         assertEquals(cityDto, cityWarehouse.getCached().getFirst());
-
-        cityWarehouse.clear();
     }
 
     @Test
@@ -54,8 +60,6 @@ class WarehouseTest {
         cityWarehouse.addListToList(List.of(cityDto, cityDto1));
 
         assertEquals(2, cityWarehouse.getCached().size());
-
-        cityWarehouse.clear();
     }
 
     @Test
@@ -66,8 +70,6 @@ class WarehouseTest {
         cityWarehouse.addToList(cityDto1);
 
         assertEquals(cityDto, cityWarehouse.getById(1L).get());
-
-        cityWarehouse.clear();
     }
 
     @Test
@@ -77,8 +79,6 @@ class WarehouseTest {
         cityWarehouse.addToList(cityDto);
 
         assertTrue(cityWarehouse.isMissed(cityDto1));
-
-        cityWarehouse.clear();
     }
 
     @Test
@@ -87,7 +87,60 @@ class WarehouseTest {
         cityWarehouse.addToList(cityDto);
 
         assertTrue(cityWarehouse.isPresent(cityDto));
-
-        cityWarehouse.clear();
     }
+
+    @Test
+    void test_Find_Matching_Record_In_Cache(){
+        CountryDto countryDto = new CountryDto(1L, "Serbia");
+        countryWarehouse.addToList(new CountryDto(10L, "Serbia"));
+
+        assertTrue(countryWarehouse.findCacheMatch(countryDto).isPresent());
+
+        CityDto cityDto = new CityDto(10L, "Belgrade", countryDto);
+        cityWarehouse.addToList(
+                new CityDto(
+                        20L, "Belgrade",
+                        new CountryDto(2L, "Serbia")
+                )
+        );
+
+        assertTrue(cityWarehouse.findCacheMatch(cityDto).isPresent());
+
+        AirportDto airportDto = new AirportDto(
+                1L,
+                "Nikola Tesla",
+                cityDto,
+                "BEG",
+                "LYBE",
+                44.81825555,
+                20.30235943163158,
+                102.0,
+                2.0,
+                "N",
+                "Serbia/Belgrade",
+                "airport",
+                "test"
+        );
+
+        airportWarehouse.addToList( new AirportDto(
+                        null,
+                        "Nikola Tesla",
+                        cityDto,
+                        "BEG",
+                        "LYBE",
+                        44.81825555,
+                        20.30235943163158,
+                        102.0,
+                        2.0,
+                        "N",
+                        "Serbia/Belgrade",
+                        "airport",
+                        "test"
+                )
+        );
+
+        assertTrue(airportWarehouse.findCacheMatch(airportDto).isPresent());
+    }
+
+
 }

@@ -8,6 +8,7 @@ import com.route.flights.mapper.CountryMapper;
 import com.route.flights.repository.CountryRepository;
 import com.route.flights.warehouse.GlobalWarehouse;
 import com.route.flights.warehouse.implementation.CountryWarehouse;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -15,7 +16,6 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.awt.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,9 +50,8 @@ class CountryProcessorTest {
         );
     }
 
-
     @Test
-    void processImportCountries() {
+    void test_Process_Import_No_Cached_Records() {
         Airport airport = Mockito.mock(Airport.class);
         City city = Mockito.mock(City.class);
         Country country = Mockito.mock(Country.class);
@@ -64,6 +63,7 @@ class CountryProcessorTest {
         Mockito.when(countryRepository.save(country)).thenReturn(country);
         Mockito.when(countryMapper.mapToDto(country)).thenReturn(countryDto);
         Mockito.when(globalWarehouse.getCountryWarehouse()).thenReturn(countryWarehouse);
+        Mockito.when(countryWarehouse.isMissed(countryDto)).thenReturn(true);
 
         var resultList = countryProcessor.processImportCountries(airportList);
 
@@ -71,5 +71,29 @@ class CountryProcessorTest {
 
         Mockito.verify(countryRepository).save(country);
         Mockito.verify(countryWarehouse).addToList(countryDto);
+    }
+
+    @Test
+    void test_Process_Import_Cached_Records() {
+        Airport airport = Mockito.mock(Airport.class);
+        City city = Mockito.mock(City.class);
+        Country country = Mockito.mock(Country.class);
+        CountryDto countryDto = Mockito.mock(CountryDto.class);
+        List<Airport> airportList = List.of(airport);
+
+        Mockito.when(airport.getCity()).thenReturn(city);
+        Mockito.when(city.getCountry()).thenReturn(country);
+        Mockito.when(countryMapper.mapToDto(country)).thenReturn(countryDto);
+        Mockito.when(globalWarehouse.getCountryWarehouse()).thenReturn(countryWarehouse);
+        Mockito.when(countryWarehouse.isMissed(countryDto)).thenReturn(false);
+
+        var resultList = countryProcessor.processImportCountries(airportList);
+
+        assertEquals(resultList, List.of());
+
+        Mockito.verifyNoInteractions(countryRepository);
+        Mockito.verify(globalWarehouse, Mockito.times(2)).getCountryWarehouse();
+        Mockito.verify(countryWarehouse).isMissed(countryDto);
+        Mockito.verifyNoMoreInteractions(countryWarehouse);
     }
 }
