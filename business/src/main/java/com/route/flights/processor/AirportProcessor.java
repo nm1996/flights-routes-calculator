@@ -26,13 +26,13 @@ public class AirportProcessor {
                 .peek(airport -> {
                     var dtoCity = cityMapper.mapToDto(airport.getCity());
                     if (globalWarehouse.getCityWarehouse().isMissed(dtoCity)) {
-                        globalWarehouse.getCityWarehouse().addToList(dtoCity);
+                        globalWarehouse.getCityWarehouse().putInCache(dtoCity);
                     }
                     airport.setCity(cityMapper.mapToEntity(dtoCity));
                 })
                 .map(airportRepository::save)
                 .map(airportMapper::mapToDto)
-                .peek(globalWarehouse.getAirportWarehouse()::addToList)
+                .peek(globalWarehouse.getAirportWarehouse()::putInCache)
                 .toList();
     }
 }

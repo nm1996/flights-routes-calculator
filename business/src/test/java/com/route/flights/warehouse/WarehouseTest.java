@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,27 +39,27 @@ class WarehouseTest {
 
     @Test
     void getCached() {
-        List<CountryDto> countryDtoList = new ArrayList<>();
-        List<AirportDto> airportDtoList = new ArrayList<>();
-        List<CityDto> cityDtoList = new ArrayList<>();
-        assertEquals(cityDtoList, cityWarehouse.getCached());
-        assertEquals(airportDtoList, airportWarehouse.getCached());
-        assertEquals(countryDtoList, countryWarehouse.getCached());
+        Map<Long, CountryDto> countryDtoMap = new HashMap<>();
+        Map<Long, AirportDto> airportDtoMap = new HashMap<>();
+        Map<Long, CityDto> cityDtoMap = new HashMap<>();
+        assertEquals(countryDtoMap, cityWarehouse.getCached());
+        assertEquals(airportDtoMap, airportWarehouse.getCached());
+        assertEquals(cityDtoMap, countryWarehouse.getCached());
     }
 
     @Test
-    void addToList() {
+    void putInCache() {
         CityDto cityDto = new CityDto(1L, "Belgrade", new CountryDto(1L, "Serbia"));
-        cityWarehouse.addToList(cityDto);
+        cityWarehouse.putInCache(cityDto);
 
-        assertEquals(cityDto, cityWarehouse.getCached().getFirst());
+        assertEquals(cityDto, cityWarehouse.getCached().get(1L));
     }
 
     @Test
     void addListToList() {
         CityDto cityDto = new CityDto(1L, "Belgrade", new CountryDto(1L, "Serbia"));
         CityDto cityDto1 = new CityDto(2L, "Nis", new CountryDto(2L, "Serbia"));
-        cityWarehouse.addListToList(List.of(cityDto, cityDto1));
+        cityWarehouse.addListToCache(List.of(cityDto, cityDto1));
 
         assertEquals(2, cityWarehouse.getCached().size());
     }
@@ -66,8 +68,8 @@ class WarehouseTest {
     void getById() {
         CityDto cityDto = new CityDto(1L, "Belgrade", new CountryDto(1L, "Serbia"));
         CityDto cityDto1 = new CityDto(2L, "Nis", new CountryDto(2L, "Serbia"));
-        cityWarehouse.addToList(cityDto);
-        cityWarehouse.addToList(cityDto1);
+        cityWarehouse.putInCache(cityDto);
+        cityWarehouse.putInCache(cityDto1);
 
         assertEquals(cityDto, cityWarehouse.getById(1L).get());
     }
@@ -76,7 +78,7 @@ class WarehouseTest {
     void isMissed() {
         CityDto cityDto = new CityDto(1L, "Belgrade", new CountryDto(1L, "Serbia"));
         CityDto cityDto1 = new CityDto(2L, "Nis", new CountryDto(2L, "Serbia"));
-        cityWarehouse.addToList(cityDto);
+        cityWarehouse.putInCache(cityDto);
 
         assertTrue(cityWarehouse.isMissed(cityDto1));
     }
@@ -84,7 +86,7 @@ class WarehouseTest {
     @Test
     void isPresent() {
         CityDto cityDto = new CityDto(1L, "Belgrade", new CountryDto(1L, "Serbia"));
-        cityWarehouse.addToList(cityDto);
+        cityWarehouse.putInCache(cityDto);
 
         assertTrue(cityWarehouse.isPresent(cityDto));
     }
@@ -92,12 +94,12 @@ class WarehouseTest {
     @Test
     void test_Find_Matching_Record_In_Cache(){
         CountryDto countryDto = new CountryDto(1L, "Serbia");
-        countryWarehouse.addToList(new CountryDto(10L, "Serbia"));
+        countryWarehouse.putInCache(new CountryDto(10L, "Serbia"));
 
         assertTrue(countryWarehouse.findCacheMatch(countryDto).isPresent());
 
         CityDto cityDto = new CityDto(10L, "Belgrade", countryDto);
-        cityWarehouse.addToList(
+        cityWarehouse.putInCache(
                 new CityDto(
                         20L, "Belgrade",
                         new CountryDto(2L, "Serbia")
@@ -122,7 +124,7 @@ class WarehouseTest {
                 "test"
         );
 
-        airportWarehouse.addToList( new AirportDto(
+        airportWarehouse.putInCache( new AirportDto(
                         null,
                         "Nikola Tesla",
                         cityDto,

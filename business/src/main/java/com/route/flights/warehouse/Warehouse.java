@@ -3,32 +3,45 @@ package com.route.flights.warehouse;
 import com.route.flights.dto.DTO;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-public interface Warehouse<T extends DTO, E> {
+public interface Warehouse<T extends DTO, E extends Long> {
 
-    List<T> getCached();
+    Map<Long,T> getCached();
 
-    default void addToList(T t){
-        getCached().add(t);
+    default void putInCache(T t){
+        getCached().put(t.getId(), t);
     }
 
-    default void addListToList(List<T> tList){
-        getCached().addAll(tList);
+    default void putInCache(E e, T t){
+        getCached().put(e,t);
+    }
+
+    default void addListToCache(List<T> tList){
+        Map<Long, T> mapFromList = tList.stream()
+                .collect(Collectors.toMap(
+                        DTO::getId,
+                        val -> val
+                ));
+        getCached().putAll(mapFromList);
     }
 
     default Optional<T> getById(E e){
-        return getCached().stream()
-                .filter(elem -> elem.getId() == e)
-                .findFirst();
+        return Optional.of(getCached().get(e));
     }
 
     default boolean isMissed(T t){
-        return getCached().stream().noneMatch(elem -> elem.equals(t));
+        return !getCached().containsValue(t);
     }
 
     default boolean isPresent(T t){
-        return getCached().stream().anyMatch(elem -> elem.equals(t));
+        return getCached().containsValue(t);
+    }
+
+    default boolean isPresentById(E e){
+        return getCached().containsKey(e);
     }
 
     default void clear(){
@@ -36,8 +49,12 @@ public interface Warehouse<T extends DTO, E> {
     }
 
     default Optional<T> findCacheMatch(T t){
-        return getCached().stream()
-                .filter(elem -> elem.equals(t))
-                .findFirst();
+        if(getCached().containsValue(t)){
+            return getCached().entrySet().stream()
+                    .filter( kv -> kv.getValue().equals(t))
+                    .findFirst()
+                    .map(Map.Entry::getValue);
+        }
+        return Optional.empty();
     }
 }

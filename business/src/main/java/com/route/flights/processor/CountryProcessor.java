@@ -26,7 +26,7 @@ public class CountryProcessor {
                 .filter(this::isNotCached)
                 .map(countryRepository::save)
                 .map(countryMapper::mapToDto)
-                .peek(globalWarehouse.getCountryWarehouse()::addToList)
+                .peek(globalWarehouse.getCountryWarehouse()::putInCache)
                 .toList();
     }
 

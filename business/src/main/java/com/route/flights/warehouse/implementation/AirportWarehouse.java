@@ -5,17 +5,17 @@ import com.route.flights.warehouse.Warehouse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Component
 public class AirportWarehouse implements Warehouse<AirportDto, Long> {
 
-    private final List<AirportDto> cachedList = new ArrayList<>();
+    private final Map<Long, AirportDto> cache = new HashMap<>();
 
     @Override
-    public List<AirportDto> getCached() {
-        return cachedList;
+    public Map<Long, AirportDto> getCached() {
+        return cache;
     }
 }
