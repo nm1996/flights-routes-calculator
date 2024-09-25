@@ -32,7 +32,7 @@ public class CityProcessor {
                 .peek(this::processCountryForCity)
                 .map(cityRepository::save)
                 .map(cityMapper::mapToDto)
-                .peek(globalWarehouse.getCityWarehouse()::addToList)
+                .peek(globalWarehouse.getCityWarehouse()::putInCache)
                 .toList();
     }
 
@@ -52,7 +52,7 @@ public class CityProcessor {
         if(optionalCacheMatch.isEmpty()){
             var storedCountry = countryRepository.save(country);
             entityForStore = countryMapper.mapToDto(storedCountry);
-            globalWarehouse.getCountryWarehouse().addToList(entityForStore);
+            globalWarehouse.getCountryWarehouse().putInCache(entityForStore);
         }else{
             entityForStore = optionalCacheMatch.get();
         }

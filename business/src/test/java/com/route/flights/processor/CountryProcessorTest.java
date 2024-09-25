@@ -8,7 +8,6 @@ import com.route.flights.mapper.CountryMapper;
 import com.route.flights.repository.CountryRepository;
 import com.route.flights.warehouse.GlobalWarehouse;
 import com.route.flights.warehouse.implementation.CountryWarehouse;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -70,7 +69,7 @@ class CountryProcessorTest {
         assertEquals(resultList, List.of(countryDto));
 
         Mockito.verify(countryRepository).save(country);
-        Mockito.verify(countryWarehouse).addToList(countryDto);
+        Mockito.verify(countryWarehouse).putInCache(countryDto);
     }
 
     @Test

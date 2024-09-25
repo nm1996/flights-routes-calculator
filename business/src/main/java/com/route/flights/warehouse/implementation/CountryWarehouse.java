@@ -4,18 +4,18 @@ import com.route.flights.dto.CountryDto;
 import com.route.flights.warehouse.Warehouse;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Component
 public class CountryWarehouse implements Warehouse<CountryDto, Long> {
 
 
-    private final List<CountryDto> cachedList = new ArrayList<>();
+    private final Map<Long, CountryDto> cache = new HashMap<>();
 
     @Override
-    public List<CountryDto> getCached() {
-        return cachedList;
+    public Map<Long, CountryDto> getCached() {
+        return cache;
     }
 }

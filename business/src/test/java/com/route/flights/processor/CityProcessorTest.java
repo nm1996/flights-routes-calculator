@@ -80,7 +80,7 @@ class CityProcessorTest {
 
         Mockito.verifyNoInteractions(countryRepository);
         Mockito.verify(cityRepository).save(city);
-        Mockito.verify(cityWarehouse).addToList(cityDto);
+        Mockito.verify(cityWarehouse).putInCache(cityDto);
     }
 
     @Test
@@ -158,9 +158,9 @@ class CityProcessorTest {
         Mockito.verify(cityRepository).save(city2);
         Mockito.verify(countryWarehouse).findCacheMatch(countryDto);
         Mockito.verify(countryWarehouse).findCacheMatch(countryDto2);
-        Mockito.verify(countryWarehouse).addToList(countryDto2);
+        Mockito.verify(countryWarehouse).putInCache(countryDto2);
         Mockito.verifyNoMoreInteractions(countryWarehouse);
-        Mockito.verify(cityWarehouse).addToList(cityDto);
-        Mockito.verify(cityWarehouse).addToList(cityDto2);
+        Mockito.verify(cityWarehouse).putInCache(cityDto);
+        Mockito.verify(cityWarehouse).putInCache(cityDto2);
     }
 }
